@@ -7,6 +7,13 @@ import {resolve} from 'path';
 
 // https://vitejs.dev/config/
 export default defineConfig({
+    // 新增 server 配置
+    server: {
+        port: 8081, // 改成你想要的端口号
+        strictPort: true, // 新增这个配置防止端口被占用时自动切换
+        host: '0.0.0.0', // 允许所有网络接口访问
+        open: false  // 可选：自动打开浏览器
+    },
     resolve: {
         alias: {
             // @ 替代为 src

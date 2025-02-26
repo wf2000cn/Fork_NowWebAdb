@@ -71,6 +71,26 @@ const connectStatus = ref('disconnected');
 const devicesName = ref('')
 let timerId;  // 定时器标识
 const connectDevice = async () => {
+  // 检查 WebUSB 支持
+  if (!navigator.usb) {
+    ElNotification.error({
+      title: '浏览器不支持',
+      message: '当前浏览器不支持 WebUSB API,请使用最新版 Chrome/Edge',
+      duration: 5000
+    });
+    return;
+  }
+
+  // 检查管理器可用性
+  if (!AdbDaemonWebUsbDeviceManager?.BROWSER?.requestDevice) {
+    ElNotification.error({
+      title: 'ADB 管理器未初始化',
+      message: '请检查 adb 库是否正确加载',
+      duration: 5000
+    });
+    return;
+  }
+
   connectStatus.value = 'connecting'
   setTimeout(() => {
     changeColor()
