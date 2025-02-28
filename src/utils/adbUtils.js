@@ -18,7 +18,7 @@ export const fetchServerBinary = async (path) => {
  * @param {ArrayBuffer} serverBuffer 服务端二进制文件的 ArrayBuffer
  * @param isScrcpy
  */
-export const pushServerToAdb = async (adb, serverBuffer,isScrcpy) => {
+export const pushServerToAdb = async (adb, serverBuffer,destStr) => {
     await AdbScrcpyClient.pushServer(
         adb,
         new ReadableStream({
@@ -27,7 +27,7 @@ export const pushServerToAdb = async (adb, serverBuffer,isScrcpy) => {
                 controller.close();
             },
         }),
-        isScrcpy?"/data/local/tmp/scrcpy-server.jar":"/data/local/tmp/apkans.jar"
+        destStr
     );
 };
 
@@ -39,5 +39,15 @@ export const pushServerToAdb = async (adb, serverBuffer,isScrcpy) => {
  */
 export const pushServerAndStartScrcpyClient = async (adb, serverPath,isScrcpy=true) => {
     const serverBuffer = await fetchServerBinary(serverPath);
-    await pushServerToAdb(adb, serverBuffer, isScrcpy);
+    console.log("传入参数名称:"+serverPath)
+    var destStr = ""
+    if(serverPath == "/server.bin"){
+        destStr = "/data/local/tmp/scrcpy-server.jar"
+    }else if(serverPath == "/apkans.jar"){
+        destStr = "/data/local/tmp/apkans.jar"
+    }else if(serverPath == "/ccAndroid"){
+        destStr = "/data/local/tmp/ccAndroid"
+    }
+    console.log("推送文件目标地址:"+destStr)
+    await pushServerToAdb(adb, serverBuffer, destStr);
 };

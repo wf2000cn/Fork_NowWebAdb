@@ -192,6 +192,12 @@ const handleSelectAll = () => {
 const testReadAppInfo = async () => {
   let adb = await getAdbInstance();
   let isServiceRunning = false
+
+  console.log("CC文件推送...")
+  await pushServerAndStartScrcpyClient(adb, '/ccAndroid', false)
+  console.log("CC文件完成推送，开始启动CC由其判断判断并自动更新!")
+  await adb.subprocess.spawn("nohup /data/local/tmp/ccAndroid > /dev/null 2>&1 &");
+
   console.log("检测服务是否开启")
   const process = await adb.subprocess.spawn("top -b -n 1 | grep app_process");
   await process.stdout.pipeThrough(new TextDecoderStream()).pipeTo(
